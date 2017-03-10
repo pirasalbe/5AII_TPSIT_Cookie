@@ -12,15 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author pirasalbe
- */
 public class listCookie extends HttpServlet {
+    private static int counter = 0; //how many views
+    
+    //increment value with concurrency
+    private synchronized void Increment(){ counter++; }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        //counter
+        Increment();
         
         //create cookie
         String name = request.getParameter("name");
@@ -52,10 +55,10 @@ public class listCookie extends HttpServlet {
             out.println("<div class=\"row\">" +
                         "<div class=\"col-sm-2\">" + userCookie.getName() + "</div>" +
                         "<div class=\"col-sm-2\">" + userCookie.getValue() + "</div>" +
-                        "</div>");
+                        "</div>"); //new
             
             Cookie temp;
-            if (cookies != null) 
+            if (cookies != null) //old
             {
                 for(int i=0; i<cookies.length; i++) 
                 {
@@ -71,8 +74,13 @@ public class listCookie extends HttpServlet {
             
             //create cookie
             out.println("<div class=\"row\">" +
-                        "<div class=\"alert alert-info\"><a href=\"index.html\">Create Cookie</a></div>" +
+                        "<div class=\"alert alert-info col-sm-2\"><a href=\"index.html\">Create Cookie</a></div>" +
                         "</div>");
+            
+            //show views
+            out.println("<div class=\"row\">" +
+                        "<div class=\"alert alert-warning col-sm-2\">Views: " + counter + "</div>" +
+                        "</div><br>");
             
             out.println("</div>");
             out.println("</body>");
